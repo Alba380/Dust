@@ -12,7 +12,7 @@ def change_to_bw(bytes_data, calibration_value):
     
     # Apply Otsu's thresholding to the grayscale image
     im_bw = ImageOps.autocontrast(pil_image, cutoff=calibration_value)
-    im_bw = im_bw.point(lambda x: 0 if x < 128 else 255, '1')
+    im_bw = im_bw.point(lambda x: 0 if x < 150+calibration_value else 255, '1')
     
     # Convert the resulting image to a NumPy array
     im_bw_np = np.array(im_bw)
@@ -35,7 +35,7 @@ if uploaded_file is None:
     CALIBRATION_VALUE = -35
 else:
     bytes_data = uploaded_file.read()
-    CALIBRATION_VALUE= st.slider('Enter a calibration value', -70, 0, -35)
+    CALIBRATION_VALUE= st.slider('Enter a calibration value', -50, 50, 0)
 
     col1, col2= st.columns(2)
     with col1:
