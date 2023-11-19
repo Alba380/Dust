@@ -1,10 +1,10 @@
+import streamlit as st
 import pandas as pd
 import numpy as np
-import streamlit as st
-from PIL import Image, ImageOps
-import io 
-import tensorflow as tf 
-
+#import importlib  
+#cv2 = importlib.import_module("opencv-python-headless")
+#import `opencv-python-headless' as cv2
+import cv2
 
 from keras.preprocessing.image import ImageDataGenerator
 #from keras.utils import load_img, img_to_array
@@ -19,18 +19,13 @@ from keras.applications.resnet import ResNet50, preprocess_input
 
 
 def change_to_bw(bytes_data, calibration_value):
-    # Decode the image from bytes data to grayscale
-    pil_image = Image.open(io.BytesIO(bytes_data)).convert("L")
-    
-    # Apply Otsu's thresholding to the grayscale image
-    im_bw = ImageOps.autocontrast(pil_image, cutoff=calibration_value)
-    im_bw = im_bw.point(lambda x: 0 if x < 150+calibration_value else 255, '1')
-    
-    # Convert the resulting image to a NumPy array
-    im_bw_np = np.array(im_bw)
-    
-    # Return the resulting black and white image and the final calibration value
-    return im_bw_np, calibration_value
+  im_gray = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_GRAYSCALE) 
+  (thresh, im_bw) = cv2.threshold(im_gray, 127, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+  thresh += calibration_value
+  im_bw = cv2.threshold(im_gray, thresh, 255, cv2.THRESH_BINARY)[1]
+  #im_bw = np.array(im_bw)
+
+  return(im_bw, thresh)
 
 st.title('Jetaire Dust Detection')
 
@@ -40,13 +35,14 @@ images_dir = './imgs/'
 normed_dims = (500,500)
 
 
+
 uploaded_file = st.file_uploader("Upload an image", type=['png','jpg'])
 
 if uploaded_file is None:
     CALIBRATION_VALUE = -35
 else:
     bytes_data = uploaded_file.read()
-    CALIBRATION_VALUE= st.slider('Enter a calibration value', -50, 50, 0)
+    CALIBRATION_VALUE= st.slider('Enter a calibration value', -70, 0, -35)
 
     col1, col2= st.columns(2)
     with col1:
@@ -56,10 +52,9 @@ else:
     with col2:
         st.subheader("Processed")
         (image_bw,thres)=change_to_bw(bytes_data, CALIBRATION_VALUE)
-        processed_image = Image.fromarray(image_bw)
-        processed_image.save('./imgs/0/curr_image.jpg')
-        st.image(processed_image)
- 
+        cv2.imwrite('./imgs/0/curr_image.jpg', image_bw)
+        st.image(image_bw)
+
     test_datagen = ImageDataGenerator(dtype='float32',
                                 preprocessing_function = preprocess_input)
 
@@ -84,7 +79,7 @@ else:
     if y_percentage[0] < 25:
         color = 'green'
 
-    st.header(f'Dust percentage: :{color}[{round(y_percentage[0],2)}%]') 
+    st.header(f'Dust percentage: :{color}[{round(y_percentage[0],2)}%]')
 
 
 
