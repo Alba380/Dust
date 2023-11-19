@@ -1,9 +1,9 @@
-pip install opencv-python
-import cv2
 
-import streamlit as st
+
 import pandas as pd
 import numpy as np
+import cv2
+import streamlit as st
 #import importlib  
 #cv2 = importlib.import_module("opencv-python-headless")
 #import `opencv-python-headless' as cv2
