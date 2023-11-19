@@ -4,6 +4,16 @@ import streamlit as st
 from PIL import Image, ImageOps
 import io 
 
+from keras.preprocessing.image import ImageDataGenerator
+#from keras.utils import load_img, img_to_array
+from keras.models import Sequential, load_model, Model
+#from keras.layers import Conv2D, MaxPooling2D
+#from keras.layers import Activation, Dropout, Flatten, Dense, GlobalAveragePooling2D
+#from keras import backend as K
+#from keras.callbacks import ModelCheckpoint
+#from keras import regularizers
+
+from keras.applications.resnet import ResNet50, preprocess_input
 
 
 def change_to_bw(bytes_data, calibration_value):
@@ -22,11 +32,10 @@ def change_to_bw(bytes_data, calibration_value):
 
 st.title('Jetaire Dust Detection')
 
-""" modelpath='./model_current_best.h5'
+modelpath='./model_current_best.h5'
 model = load_model(modelpath)
 images_dir = './imgs/'
 normed_dims = (500,500)
- """
 
 
 uploaded_file = st.file_uploader("Upload an image", type=['png','jpg'])
@@ -48,7 +57,7 @@ else:
         processed_image = Image.fromarray(image_bw)
         processed_image.save('./imgs/0/curr_image.jpg')
         st.image(processed_image)
-""" 
+ 
     test_datagen = ImageDataGenerator(dtype='float32',
                                 preprocessing_function = preprocess_input)
 
@@ -73,7 +82,7 @@ else:
     if y_percentage[0] < 25:
         color = 'green'
 
-    st.header(f'Dust percentage: :{color}[{round(y_percentage[0],2)}%]') """
+    st.header(f'Dust percentage: :{color}[{round(y_percentage[0],2)}%]') 
 
 
 
