@@ -46,6 +46,7 @@ else:
         (image_bw,thres)=change_to_bw(bytes_data, CALIBRATION_VALUE)
         processed_image = Image.fromarray(image_bw)
         processed_image.save('./imgs/0/curr_image.jpg')
+        st.image(processed_image)
 """ 
     test_datagen = ImageDataGenerator(dtype='float32',
                                 preprocessing_function = preprocess_input)
