@@ -11,7 +11,7 @@ def change_to_bw(bytes_data, calibration_value):
     pil_image = Image.open(io.BytesIO(bytes_data)).convert("L")
     
     # Apply Otsu's thresholding to the grayscale image
-    im_bw = ImageOps.autocontrast(pil_image, cutoff=calibration_value)
+    im_bw = ImageOps.autocontrast(pil_image, cutoff=calibration_value).convert(1)
     
     # Convert the resulting image to a NumPy array
     im_bw_np = np.array(im_bw)
