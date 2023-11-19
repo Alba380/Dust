@@ -12,7 +12,7 @@ def change_to_bw(bytes_data, calibration_value):
     
     # Apply Otsu's thresholding to the grayscale image
     im_bw = ImageOps.autocontrast(pil_image, cutoff=calibration_value)
-    im_bw=im_bw.convert("1")
+    im_bw = im_bw.point(lambda x: 0 if x < 128 else 255, '1')
     
     # Convert the resulting image to a NumPy array
     im_bw_np = np.array(im_bw)
