@@ -3,6 +3,18 @@ import numpy as np
 import streamlit as st
 from PIL import Image, ImageOps
 
+from keras.preprocessing.image import ImageDataGenerator
+#from keras.utils import load_img, img_to_array
+from keras.models import Sequential, load_model, Model
+#from keras.layers import Conv2D, MaxPooling2D
+#from keras.layers import Activation, Dropout, Flatten, Dense, GlobalAveragePooling2D
+#from keras import backend as K
+#from keras.callbacks import ModelCheckpoint
+#from keras import regularizers
+
+from keras.applications.resnet import ResNet50, preprocess_input
+
+
 def change_to_bw(bytes_data, calibration_value):
     # Decode the image from bytes data to grayscale
     pil_image = Image.open(io.BytesIO(bytes_data)).convert("L")
