@@ -1,36 +1,20 @@
-
-
 import pandas as pd
 import numpy as np
 import streamlit as st
-import cv2
-
-#import importlib  
-#cv2 = importlib.import_module("opencv-python-headless")
-#import `opencv-python-headless' as cv2
-
-
-
-from keras.preprocessing.image import ImageDataGenerator
-#from keras.utils import load_img, img_to_array
-from keras.models import Sequential, load_model, Model
-#from keras.layers import Conv2D, MaxPooling2D
-#from keras.layers import Activation, Dropout, Flatten, Dense, GlobalAveragePooling2D
-#from keras import backend as K
-#from keras.callbacks import ModelCheckpoint
-#from keras import regularizers
-
-from keras.applications.resnet import ResNet50, preprocess_input
-
+from PIL import Image, ImageOps
 
 def change_to_bw(bytes_data, calibration_value):
-  im_gray = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_GRAYSCALE) 
-  (thresh, im_bw) = cv2.threshold(im_gray, 127, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-  thresh += calibration_value
-  im_bw = cv2.threshold(im_gray, thresh, 255, cv2.THRESH_BINARY)[1]
-  #im_bw = np.array(im_bw)
-
-  return(im_bw, thresh)
+    # Decode the image from bytes data to grayscale
+    pil_image = Image.open(io.BytesIO(bytes_data)).convert("L")
+    
+    # Apply Otsu's thresholding to the grayscale image
+    im_bw = ImageOps.autocontrast(pil_image, cutoff=calibration_value)
+    
+    # Convert the resulting image to a NumPy array
+    im_bw_np = np.array(im_bw)
+    
+    # Return the resulting black and white image and the final calibration value
+    return im_bw_np, calibration_value
 
 st.title('Jetaire Dust Detection')
 
