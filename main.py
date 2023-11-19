@@ -44,8 +44,8 @@ else:
     with col2:
         st.subheader("Processed")
         (image_bw,thres)=change_to_bw(bytes_data, CALIBRATION_VALUE)
-        cv2.imwrite('./imgs/0/curr_image.jpg', image_bw)
-        st.image(image_bw)
+        processed_image = Image.fromarray(image_bw)
+        processed_image.save('./imgs/0/curr_image.jpg')
 """ 
     test_datagen = ImageDataGenerator(dtype='float32',
                                 preprocessing_function = preprocess_input)
